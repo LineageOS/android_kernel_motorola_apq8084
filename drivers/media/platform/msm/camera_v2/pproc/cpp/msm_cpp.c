@@ -495,7 +495,7 @@ static int cpp_init_mem(struct cpp_device *cpp_dev)
 
 	kref_init(&cpp_dev->refcount);
 	kref_get(&cpp_dev->refcount);
-	cpp_dev->client = msm_ion_client_create(-1, "cpp");
+	cpp_dev->client = msm_ion_client_create("cpp");
 
 	CPP_DBG("E\n");
 	if (!cpp_dev->domain) {
@@ -1660,8 +1660,7 @@ long msm_cpp_subdev_ioctl(struct v4l2_subdev *sd,
 		uint32_t identity;
 		struct msm_cpp_buff_queue_info_t *buff_queue_info;
 		CPP_DBG("VIDIOC_MSM_CPP_DEQUEUE_STREAM_BUFF_INFO\n");
-		if ((ioctl_ptr->len == 0) ||
-		    (ioctl_ptr->len > sizeof(uint32_t))) {
+		if (ioctl_ptr->len != sizeof(uint32_t)) {
 			mutex_unlock(&cpp_dev->mutex);
 			return -EINVAL;
 		}

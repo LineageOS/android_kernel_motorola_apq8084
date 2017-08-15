@@ -3258,6 +3258,7 @@ static iw_softap_disassoc_sta(struct net_device *dev,
     struct tagCsrDelStaParams delStaParams;
 
     ENTER();
+
     if (!capable(CAP_NET_ADMIN)) {
         VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                  FL("permission check failed"));
@@ -4037,6 +4038,13 @@ static int iw_set_ap_genie(struct net_device *dev,
     {
         EXIT();
         return 0;
+    }
+
+    if (wrqu->data.length > DOT11F_IE_RSN_MAX_LEN) {
+       VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
+               "%s: WPARSN Ie input length is more than max[%d]", __func__,
+                wrqu->data.length);
+       return -EINVAL;
     }
 
     switch (genie[0])
